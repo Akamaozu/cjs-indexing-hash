@@ -1,0 +1,14 @@
+{
+  "name": "cjs-indexing-hash",
+  "version": "1.0.0",
+  "description": "auto-indexing hash - just add index name and logic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "akamaozu <uzo@designbymobius.ca> (http://designbymobi.us/)",
+  "license": "MIT",
+  "dependencies": {
+    "cjs-sync-hooks": "^0.1.1"
+  }
+}
