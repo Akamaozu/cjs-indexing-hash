@@ -20,18 +20,18 @@ var create_indexing_hash = require('cjs-indexing-hash'),
 #### > objects
 ```js
 var users = {
-    batman: { is_cool: true },
-    superman: { is_cool: false }
-  },
-  indexable_users = create_indexing_hash( users );
+      batman: { is_cool: true },
+      superman: { is_cool: false }
+    },
+    indexable_users = create_indexing_hash( users );
 ```
 #### > arrays
 ```js
 var users = [
-    { id: batman, is_cool: true },
-    { id: superman, is_cool: false }
-  ],
-  indexable_users = create_indexing_hash( users );
+      { id: batman, is_cool: true },
+      { id: superman, is_cool: false }
+    ],
+    indexable_users = create_indexing_hash( users );
 ```
 #### > strings
 ```js
@@ -56,9 +56,9 @@ indexable_users.add( 'wonder_woman', { is_cool: true });
 
 ### create index
 ```js
-    indexable_users.add_index( 'is-cool', function( entry, add_to_index ){
-      if(  entry.is_cool == true ) add_to_index();
-    });
+indexable_users.add_index( 'is-cool', function( entry, add_to_index ){
+  if(  entry.is_cool == true ) add_to_index();
+});
 ```
 
 ### get keys in index
