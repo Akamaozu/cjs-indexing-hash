@@ -68,7 +68,7 @@ module.exports = function( given_collection ){
   });
 
   hooks.add( 'key-deleted', 'remove-from-indexes', function( details ){
-    var indexers = Object.keys( indexer ),
+    var indexers = Object.keys( indexes ),
         entry_key = details.key;
 
     indexers.forEach( function delete_entry_if_exists( name ){
@@ -82,7 +82,7 @@ module.exports = function( given_collection ){
   });
 
   hooks.add( 'key-updated', 'update-indexes', function( details ){
-    var indexers = Object.keys( indexer ),
+    var indexers = Object.keys( indexes ),
         entry_key = details.key,
         entry = details.val;
 
