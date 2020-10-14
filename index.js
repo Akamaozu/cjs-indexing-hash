@@ -146,7 +146,13 @@ module.exports = function( given_collection ){
 
   function update_entry_by_key( key, current_val, next_val ){
     if( ! collection.hasOwnProperty( key ) ) throw new Error( 'key "'+ key +'" does not exist' );
-    if( arguments.length == 3 && collection[ key ] != current_val ) throw new Error( 'expected value for key "'+ key +'" is not current value' );
+
+    if( arguments.length == 2 ){
+      next_val = current_val;
+      current_val = collection[ key ];
+    }
+
+    if( collection[ key ] != current_val ) throw new Error( 'expected value for key "'+ key +'" is not current value' );
 
     collection[ key ] = next_val;
 
