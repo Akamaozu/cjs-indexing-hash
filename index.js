@@ -41,6 +41,7 @@ module.exports = function( given_collection ){
   api.index_exists = index_exists;
   api.index_get = get_entries_by_index;
   api.intersect_indexes = intersect_indexes;
+  api.hooks = hooks;
 
   hooks.add( 'key-created', 'update-collection-keys-cache', function( details ){
     collection_keys.push( details.key );
