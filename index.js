@@ -53,19 +53,7 @@ module.exports = function( given_collection ){
   });
 
   hooks.add( 'key-created', 'index-new-entry', function( details ){
-    var indexers = Object.keys( indexes ),
-        entry_key = details.key,
-        entry = details.val;
-
-    indexers.forEach( function( name ){
-      var index = indexes[ name ],
-          indexer = index.indexer,
-          matches = index.keys;
-
-      indexer( entry, function index_entry_if_new(){
-        if( matches.indexOf( entry_key ) === -1 ) matches.push( entry_key );
-      });
-    });
+    index_entries({ key: details.key });
   });
 
   hooks.add( 'key-deleted', 'remove-from-indexes', function( details ){
@@ -83,34 +71,11 @@ module.exports = function( given_collection ){
   });
 
   hooks.add( 'key-updated', 'update-indexes', function( details ){
-    var indexers = Object.keys( indexes ),
-        entry_key = details.key,
-        entry = details.val;
-
-    indexers.forEach( function( name ){
-      var index = indexes[ name ],
-          indexer = index.indexer,
-          matches = index.keys,
-          entry_index = matches.indexOf( entry_key );
-
-      indexer( entry, function delete_entry_if_exists(){
-        if( matches.indexOf( entry_key ) > -1 ) matches.splice( entry_index, 1 );
-      });
-    });
+    index_entries({ key: details.key });
   });
 
   hooks.add( 'index-created', 'populate-created-index', function( details ){
-    var index_to_populate = indexes[ details.name ],
-        indexer = index_to_populate.indexer,
-        matches = index_to_populate.keys;
-
-    collection_keys.forEach( function( entry_key ){
-      var entry = collection[ entry_key ];
-
-      indexer( entry, function index_entry_if_new(){
-        if( matches.indexOf( entry_key ) === -1 ) matches.push( entry_key );
-      });
-    });
+    index_entries({ index: details.name });
   });
 
   return api;
@@ -224,5 +189,38 @@ module.exports = function( given_collection ){
     });
 
     return results;
+  }
+
+  function index_entries( details ){
+    if( !details ) details = {};
+
+    var keys_to_index,
+        indexes_to_run;
+
+    if( !details.keys && details.key ) keys_to_index = [ details.key ];
+    else if( !details.keys ) keys_to_index = api.keys();
+    if( Object.prototype.toString.call(keys_to_index) !== '[object Array]' ) throw new Error('unexpected datatype');
+
+    if( !details.indexes && details.index ) indexes_to_run = [ details.index ];
+    else if( !details.indexes ) indexes_to_run = api.indexes();
+    if( Object.prototype.toString.call(indexes_to_run) !== '[object Array]' ) throw new Error('unexpected datatype');
+
+    indexes_to_run.forEach( function( index_name ){
+      var index = indexes[ index_name ],
+          indexer = index.indexer;
+
+      keys_to_index.forEach( function( entry_key ){
+        var entry = api.get( entry_key ),
+            entry_index = index.keys.indexOf( entry_key ),
+            should_be_in_index = false;
+
+         indexer( entry, function ensure_entry_is_in_index(){
+           if( entry_index === -1 ) index.keys.push( entry_key );
+           should_be_in_index = true;
+         });
+
+         if( entry_index > -1 && !should_be_in_index ) index.keys.splice(entry_index, 1);
+      });
+    });
   }
 }
