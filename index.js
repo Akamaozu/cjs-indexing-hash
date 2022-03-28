@@ -40,6 +40,7 @@ module.exports = function( given_collection ){
   api.indexes = list_indexes;
   api.index_exists = index_exists;
   api.index_get = get_entries_by_index;
+  api.reindex = index_entries;
   api.intersect_indexes = intersect_indexes;
   api.hooks = hooks;
 
