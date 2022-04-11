@@ -200,11 +200,15 @@ module.exports = function( given_collection ){
 
     if( !details.keys && details.key ) keys_to_index = [ details.key ];
     else if( !details.keys ) keys_to_index = api.keys();
-    if( Object.prototype.toString.call(keys_to_index) !== '[object Array]' ) throw new Error('unexpected datatype');
+    else keys_to_index = details.keys;
+
+    if( Object.prototype.toString.call(keys_to_index) !== '[object Array]' ) throw new Error('unexpected datatype for keys to index');
 
     if( !details.indexes && details.index ) indexes_to_run = [ details.index ];
     else if( !details.indexes ) indexes_to_run = api.indexes();
-    if( Object.prototype.toString.call(indexes_to_run) !== '[object Array]' ) throw new Error('unexpected datatype');
+    else indexes_to_run = details.indexes;
+
+    if( Object.prototype.toString.call(indexes_to_run) !== '[object Array]' ) throw new Error('unexpected datatype for indexes to run');
 
     indexes_to_run.forEach( function( index_name ){
       var index = indexes[ index_name ],
