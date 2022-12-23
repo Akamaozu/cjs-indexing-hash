@@ -70,3 +70,51 @@ var cool_users = indexable_users.index_get( 'is-cool' );
 ```js
 var cool_users_with_capes = indexable_users.intersect_indexes([ 'is-cool', 'has-cape' ]);
 ```
+
+### hooks
+
+#### default indexing-hash behavior
+written in expected hook execution order
+
+```js
+// hook: key-created
+//       * executes whenever an item is added to indexing-hash
+hooks.add( 'key-created', 'update-collection-keys-cache', ({ key, val }) => {})
+
+hooks.add( 'key-created', 'index-new-entry', ({ key, val }) => {})
+
+
+// hook: key-deleted
+//       * executes whenever an item is removed from indexing-hash
+hooks.add( 'key-deleted', 'update-collection-keys-cache', ({ key, val }) => {})
+
+hooks.add( 'key-deleted', 'remove-from-indexes', ({ key, val }) => {})
+
+// hook: key-updated
+//       * executes whenever an item in indexing-hash is updated
+hooks.add( 'key-updated', 'update-indexes', ({ key, val }) => {})
+
+// hook: index-created
+//       * executes whenever an index is added to indexing-hash
+hooks.add( 'index-created', 'populate-created-index', ({ name }) => {})
+```
+
+#### create custom indexing-hash behavior
+```js
+indexable_users.hooks.add( 'key-created', 'log-user-creation', ({ key, val }) => {
+      const user = val
+      console.log( `action=user-created id=${ key } cool=${ user.is_cool }` )
+})
+
+indexable_users.hooks.add( 'index-created', 'log-index-creation', ({ name }) => {
+      console.log( `action=index-created name=${ name }` )
+})
+
+indexable_users.hooks.add( 'key-deleted', 'send-user-deletion-email', ({ key, val }) => {
+      const user_at_deletion = val
+      if (user_at_deletion.email) {
+            // send email
+            console.log( `action=send-deletion-email user=${ key }` )
+      }
+})
+```
