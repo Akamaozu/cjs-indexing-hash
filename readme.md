@@ -80,14 +80,12 @@ written in expected hook execution order
 // hook: key-created
 //       * executes whenever an item is added to indexing-hash
 hooks.add( 'key-created', 'update-collection-keys-cache', ({ key, val }) => {})
-
 hooks.add( 'key-created', 'index-new-entry', ({ key, val }) => {})
 
 
 // hook: key-deleted
 //       * executes whenever an item is removed from indexing-hash
 hooks.add( 'key-deleted', 'update-collection-keys-cache', ({ key, val }) => {})
-
 hooks.add( 'key-deleted', 'remove-from-indexes', ({ key, val }) => {})
 
 // hook: key-updated
