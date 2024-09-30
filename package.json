@@ -4,11 +4,15 @@
   "description": "auto-indexing hash - just add index name and logic",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests",
+    "test:coverage": "nyc npm test"
   },
-  "author": "akamaozu <uzo@designbymobius.ca> (http://designbymobi.us/)",
+  "author": "akamaozu <uzo@designbymobius.ca> (https://designbymobius.ca/)",
   "license": "MIT",
   "dependencies": {
     "cjs-sync-hooks": "^0.1.1"
+  },
+  "devDependencies": {
+    "nyc": "^17.0.0"
   }
 }
