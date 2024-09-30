@@ -1,6 +1,8 @@
 # cjs-indexing-hash
 **lightweight key-value store with support for auto-updating indexes** *( indices? you know what i mean ... )*
 
+[![Coverage Status](https://coveralls.io/repos/github/Akamaozu/cjs-indexing-hash/badge.svg?branch=modular-design)](https://coveralls.io/github/Akamaozu/cjs-indexing-hash?branch=master)
+
 ---
 
 ### install
