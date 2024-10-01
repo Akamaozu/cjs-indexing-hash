@@ -484,6 +484,34 @@ describe( 'indexing_hash.index_get', () => {
       assert.equal( indexed_entry_keys.sort().toString(), expected_indexed_entry_keys.sort().toString(), 'keys returned by "indexing_hash.index_get" did not match expectations' )
     })
 
+    it( 'throws error if the first argument is not a string', () => {
+      const indexing_hash = create_indexing_hash( JSON.parse( JSON.stringify( superheroes_dataset ) ) )
+
+      indexing_hash.add_index( 'has-jet', ( entry, add_to_index ) => {
+        if (entry?.has_jet) add_to_index()
+      })
+
+      indexing_hash.add_index( 'has-super-strength', ( entry, add_to_index ) => {
+        if (entry?.has_super_strength) add_to_index()
+      })
+
+      const execution_errors = executes_with_type({
+        subject: indexing_hash.index_get,
+        types_map: {
+          none: { success: false, args: [] },
+          string: { success: true, args: [ 'has-super-strength' ] },
+          number: { success: false, args: [ 1001 ] },
+          array: { success: false, args: [ [ 'has-super-strength' ] ] },
+          object: { success: false, args: [ { name: 'has-super-strength' } ] },
+          function: { success: false, args: [ () => 'has-super-strength' ] },
+        },
+        expected_success: type => `"indexing_hash.index_get" threw an error when first argument type is "${ type }"`,
+        expected_error: type => `"indexing_hash.index_get" executed when first argument type is "${ type }"`,
+      })
+
+      assert.equal( execution_errors.length, 0, `execution errors:\n - ${ execution_errors.join('\n - ') }` )
+    })
+
     it( 'throws an error if first argument is not a valid index name', () => {
       const indexing_hash = create_indexing_hash()
       assert.equal( executes_without_error({ subject: indexing_hash.index_get, args: [ 'invalid-index-name' ] }), false, '"indexing_hash.index_get" did not throw an error when first argument is not a valid index name' )
