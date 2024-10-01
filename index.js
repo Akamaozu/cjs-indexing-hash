@@ -8,7 +8,7 @@ const reindex_changed_entries = require('./modules/reindex-changed-entries')
 module.exports = indexing_hash
 
 function indexing_hash( dataset_to_load ) {
-	const internal_state = {
+  const internal_state = {
     public_api: {},
     dataset: {},
     indexes: {},
