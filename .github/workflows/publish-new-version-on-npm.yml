@@ -1,4 +1,10 @@
-name: Publish New Versions on NPM
+name: Publish New Version on NPM
+
+# if:
+# - tests pass
+# - package.json version is newer than npm
+# then:
+# - publish on npm
 
 on:
   push:
