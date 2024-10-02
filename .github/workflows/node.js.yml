@@ -29,3 +29,6 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run test:coverage:report
+      env:
+        COVERALLS_REPO_TOKEN: ${{ vars.COVERALLS_REPO_TOKEN }}
+        COVERALLS_GIT_BRANCH: ${{ vars.COVERALLS_GIT_BRANCH }}
