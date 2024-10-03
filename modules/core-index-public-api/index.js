@@ -1,10 +1,7 @@
 module.exports = load_core_index_public_api
 
 function load_core_index_public_api( internal_state ) {
-	const { dataset, indexes, public_api } = internal_state ?? {}
-  const { hooks } = public_api ?? {}
-
-  if (!internal_state?.public_api) throw new Error( 'public api not found' )
+	if (!internal_state?.public_api) throw new Error( 'public api not found' )
   if (!internal_state.public_api.hooks) throw new Error( '"hooks" property not found in public api' )
 
   internal_state.public_api.indexes = get_index_keys
@@ -63,7 +60,7 @@ function load_core_index_public_api( internal_state ) {
 
     delete internal_state.indexes[ key ]
 
-    hooks.run( 'index-deleted', index_to_delete )
+    internal_state.public_api.hooks.run( 'index-deleted', index_to_delete )
   }
 
   function index_entries({
