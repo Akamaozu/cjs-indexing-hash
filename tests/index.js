@@ -73,6 +73,32 @@ describe( 'indexing_hash.keys', () => {
   })
 })
 
+describe( 'indexing_hash.exists', () => {
+  it( 'is a function', () => {
+    const indexing_hash = create_indexing_hash()
+    assert.equal( is_property_type({ type: 'function', subject: indexing_hash.exists }), true )
+  })
+
+  describe( 'indexing_hash.exists()', () => {
+    const indexing_hash = create_indexing_hash( JSON.parse( JSON.stringify( superheroes_dataset ) ))
+
+    it( 'returns true if first argument is a valid entry key', () => {
+      const valid_entry_keys = indexing_hash.keys()
+      const random_valid_key = valid_entry_keys[ Math.floor( Math.random() * valid_entry_keys.length ) ]
+
+      assert.equal( indexing_hash.exists( random_valid_key ), true, '"indexing_hash.exists" did not return true when first argument is a valid entry key' )
+    })
+
+    it( 'returns false if first argument is not a valid entry key', () => {
+      const valid_entry_keys = indexing_hash.keys()
+      const key_to_test = 'invalid-entry-key'
+
+      assert.equal( valid_entry_keys.indexOf( key_to_test ), -1 )
+      assert.equal( indexing_hash.exists( key_to_test ), false, '"indexing_hash.exists" did not return false when first argument is not a valid entry key' )
+    })
+  })
+})
+
 describe( 'indexing_hash.get', () => {
   const indexing_hash = create_indexing_hash()
 
@@ -332,6 +358,8 @@ describe( 'indexing_hash.add_index', () => {
         number: { args: [ 1001, even_numbers_indexer ], success: false },
       }
 
+      assert.equal( is_property_type({ type: 'string', subject: argument_types.string.args[ 0 ] }), true )
+
       const execution_errors = executes_with_type({
         subject: indexing_hash.add_index,
         types_map: argument_types,
@@ -365,16 +393,20 @@ describe( 'indexing_hash.add_index', () => {
     })
 
     it( 'throws an error if the second argument is not a function', () => {
+      const types_map = {
+        none: { success: false, args: [ 'even-numbers', null ] },
+        array: { success: false, args: [ 'even-numbers', [ 'invalid-array' ] ] },
+        string: { success: false, args: [ 'even-numbers', 'invalid-string' ] },
+        object: { success: false, args: [ 'even-numbers', { key: 'invalid-object' } ] },
+        number: { success: false, args: [ 'even-numbers', 1001 ] },
+        function: { success: true, args: [ 'even-numbers', () => 'valid-function' ] },
+      }
+
+      assert.equal( is_property_type({ type: 'function', subject: types_map.function.args[ 1 ] }), true )
+
       const execution_errors = executes_with_type({
         subject: indexing_hash.add_index,
-        types_map: {
-          none: { success: false, args: [ 'even-numbers', null ] },
-          array: { success: false, args: [ 'even-numbers', [ 'invalid-array' ] ] },
-          string: { success: false, args: [ 'even-numbers', 'invalid-string' ] },
-          object: { success: false, args: [ 'even-numbers', { key: 'invalid-object' } ] },
-          number: { success: false, args: [ 'even-numbers', 1001 ] },
-          function: { success: true, args: [ 'even-numbers', () => 'valid-function' ] },
-        },
+        types_map,
         expected_success: type => `"indexing_hash.add_index" did execute even though the second argument type is "${ type }"`,
         expected_error: type => `"indexing_hash.add_index" executed even though the second argument type is "${ type }" not "function"`,
       })
@@ -433,16 +465,20 @@ describe( 'indexing_hash.index_exists', () => {
         if (entry % 2 === 0) add_to_index()
       })
 
+      const types_map = {
+        none: { success: false, args: [] },
+        string: { success: true, args: [ 'even-numbers' ] },
+        object: { success: false, args: [ { message: 'even-numbers' } ] },
+        array: { success: false, args: [ [ 'even-numbers' ] ] },
+        number: { success: false, args: [ 1001 ] },
+        function: { success: false, args: [ () => 'even-numbers' ] },
+      }
+
+      assert.equal( is_property_type({ type: 'string', subject: types_map.string.args[ 0 ] }), true )
+
       const execution_errors = executes_with_type({
         subject: indexing_hash.index_exists,
-        types_map: {
-          none: { success: false, args: [] },
-          string: { success: true, args: [ 'even-numbers' ] },
-          object: { success: false, args: [ { message: 'even-numbers' } ] },
-          array: { success: false, args: [ [ 'even-numbers' ] ] },
-          number: { success: false, args: [ 1001 ] },          
-          function: { success: false, args: [ () => 'even-numbers' ] },          
-        },
+        types_map,
         expected_success: type => `"indexing_hash.index_exists" did not execute when argument type is "${ type }"`,
         expected_error: type => `"indexing_hash.index_exists" executed when given argument type is "${ type }"`,
       })
@@ -495,16 +531,20 @@ describe( 'indexing_hash.index_get', () => {
         if (entry?.has_super_strength) add_to_index()
       })
 
+      const types_map = {
+        none: { success: false, args: [] },
+        string: { success: true, args: [ 'has-super-strength' ] },
+        number: { success: false, args: [ 1001 ] },
+        array: { success: false, args: [ [ 'has-super-strength' ] ] },
+        object: { success: false, args: [ { name: 'has-super-strength' } ] },
+        function: { success: false, args: [ () => 'has-super-strength' ] },
+      }
+
+      assert.equal( is_property_type({ type: 'string', subject: types_map.string.args[ 0 ] }), true )
+
       const execution_errors = executes_with_type({
         subject: indexing_hash.index_get,
-        types_map: {
-          none: { success: false, args: [] },
-          string: { success: true, args: [ 'has-super-strength' ] },
-          number: { success: false, args: [ 1001 ] },
-          array: { success: false, args: [ [ 'has-super-strength' ] ] },
-          object: { success: false, args: [ { name: 'has-super-strength' } ] },
-          function: { success: false, args: [ () => 'has-super-strength' ] },
-        },
+        types_map,
         expected_success: type => `"indexing_hash.index_get" threw an error when first argument type is "${ type }"`,
         expected_error: type => `"indexing_hash.index_get" executed when first argument type is "${ type }"`,
       })
@@ -1082,7 +1122,6 @@ function executes_without_error({ subject, args = [] } = {}) {
 
 function executes_with_type({
   subject,
-  args = [],
   types_map = {},
   expected_success,
   expected_error
