@@ -9,6 +9,11 @@ const INDEXING_HASH_PROPERTIES = {
     type: 'function',
     required: true,
   },
+  exists: {
+    key: 'exists',
+    type: 'function',
+    required: true,
+  },
   get: {
     key: 'get',
     type: 'function',
